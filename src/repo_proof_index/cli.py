@@ -6,6 +6,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from .indexer import format_summary, format_table, load_rows, summarize_rows
+from .packet import format_validation, validate_packet_file
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -31,11 +32,31 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print a release-readiness summary instead of individual rows.",
     )
+    parser.add_argument(
+        "--validate",
+        action="store_true",
+        help="Validate proof-surface packet JSON files.",
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.validate:
+        if not args.paths:
+            print("error: --validate requires at least one packet path")
+            return 1
+        validation = [(path, validate_packet_file(path)) for path in args.paths]
+        results = [
+            {"path": str(path), "valid": not issues, "errors": [asdict(issue) for issue in issues]}
+            for path, issues in validation
+        ]
+        if args.json:
+            print(json.dumps(results, indent=2))
+        else:
+            print("\n".join(format_validation(path, issues) for path, issues in validation))
+        return 1 if any(not result["valid"] for result in results) else 0
+
     try:
         rows = load_rows(args.paths, root=args.root, contracts_dir=args.contracts_dir)
     except (FileNotFoundError, OSError, ValueError, json.JSONDecodeError) as exc:

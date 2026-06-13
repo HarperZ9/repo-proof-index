@@ -32,6 +32,8 @@ repo-proof-index contracts/*.json
 repo-proof-index contracts/*.json --json
 repo-proof-index contracts/*.json --summary
 repo-proof-index contracts/*.json --summary --json
+repo-proof-index --validate examples/contracts/proof-surface-packet.json
+repo-proof-index --validate examples/contracts/proof-surface-packet.json --json
 ```
 
 Index the common workspace location:
@@ -164,6 +166,12 @@ surface claim -> evidence pointer -> check result -> action item
 summarizes their claim, check, and action counts. See
 `examples/contracts/proof-surface-packet.json` and
 `docs/PROOF-SURFACE-INTEROP.md`.
+
+Validate packet shape locally:
+
+```bash
+repo-proof-index --validate examples/contracts/proof-surface-packet.json
+```
 
 ## Authorship
 
