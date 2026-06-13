@@ -173,6 +173,10 @@ Validate packet shape locally:
 repo-proof-index --validate examples/contracts/proof-surface-packet.json
 ```
 
+The validator is intentionally strict for the v0.1 contract: unexpected root,
+claim, or check fields are reported as errors instead of silently drifting the
+interop shape.
+
 ## Authorship
 
 Created and maintained by Zain Dana Harper. Claude Code contributed to the

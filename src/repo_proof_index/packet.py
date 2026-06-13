@@ -8,6 +8,17 @@ from typing import Any
 PACKET_VERSION = "0.1"
 PACKET_STATUSES = {"ready", "needs-polish", "blocked", "unknown"}
 CHECK_STATUSES = {"pass", "warn", "fail", "unknown"}
+ROOT_FIELDS = {
+    "proof_surface_version",
+    "packet_id",
+    "surface",
+    "status",
+    "claims",
+    "checks",
+    "action_items",
+}
+CLAIM_FIELDS = {"claim", "evidence"}
+CHECK_FIELDS = {"tool", "status", "summary"}
 
 
 @dataclass(frozen=True)
@@ -25,6 +36,7 @@ def load_packet(path: Path) -> dict[str, Any]:
 
 def validate_packet(data: dict[str, Any]) -> list[PacketIssue]:
     issues: list[PacketIssue] = []
+    _reject_unknown(data, "$", ROOT_FIELDS, issues)
     _require_const(data, "proof_surface_version", PACKET_VERSION, issues)
     _require_text(data, "packet_id", issues)
     _require_text(data, "surface", issues)
@@ -60,6 +72,16 @@ def _require_const(
         issues.append(PacketIssue(f"$.{field}", f"expected {expected!r}"))
 
 
+def _reject_unknown(
+    data: dict[str, Any],
+    path: str,
+    allowed: set[str],
+    issues: list[PacketIssue],
+) -> None:
+    for field in sorted(set(data) - allowed):
+        issues.append(PacketIssue(f"{path}.{field}", "unexpected field"))
+
+
 def _require_text(data: dict[str, Any], field: str, issues: list[PacketIssue]) -> None:
     value = data.get(field)
     if not isinstance(value, str) or not value.strip():
@@ -86,6 +108,7 @@ def _validate_claims(value: Any, issues: list[PacketIssue]) -> None:
         if not isinstance(item, dict):
             issues.append(PacketIssue(f"$.claims[{index}]", "expected object"))
             continue
+        _reject_unknown(item, f"$.claims[{index}]", CLAIM_FIELDS, issues)
         _require_text(item, f"claims[{index}].claim", issues)
         _require_text(item, f"claims[{index}].evidence", issues)
 
@@ -98,6 +121,7 @@ def _validate_checks(value: Any, issues: list[PacketIssue]) -> None:
         if not isinstance(item, dict):
             issues.append(PacketIssue(f"$.checks[{index}]", "expected object"))
             continue
+        _reject_unknown(item, f"$.checks[{index}]", CHECK_FIELDS, issues)
         _require_text(item, f"checks[{index}].tool", issues)
         _require_enum(item, f"checks[{index}].status", CHECK_STATUSES, issues)
         _require_text(item, f"checks[{index}].summary", issues)
