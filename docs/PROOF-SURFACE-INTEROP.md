@@ -19,6 +19,12 @@ The canonical schema is:
 schemas/proof-surface-packet.schema.json
 ```
 
+The normative v0.1 packet contract is:
+
+```text
+docs/PROOF-SURFACE-PACKET-v0.1.md
+```
+
 Minimum conceptual shape:
 
 ```json
