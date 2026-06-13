@@ -19,5 +19,11 @@ repo-proof-index --validate conformance/proof-surface/v0.1/invalid/unknown-root-
 repo-proof-index --validate conformance/proof-surface/v0.1/invalid/bad-check-status.packet.json
 ```
 
+Or run the fixture set:
+
+```bash
+python scripts/check_proof_surface_conformance.py
+```
+
 These files are not authority claims. They are reproducible shape checks for a
 small evidence carrier.

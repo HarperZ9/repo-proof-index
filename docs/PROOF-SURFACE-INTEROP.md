@@ -96,6 +96,12 @@ conformance/proof-surface/v0.1/
 They give producers and consumers a reproducible baseline for what the packet
 contract accepts and rejects.
 
+Run the fixture set with:
+
+```bash
+python scripts/check_proof_surface_conformance.py
+```
+
 ## Why it matters
 
 Modern AI-assisted work creates claims faster than teams can review them. A
