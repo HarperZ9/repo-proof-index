@@ -185,6 +185,18 @@ Export the portable contract bundle:
 python scripts/export_proof_surface_contract.py --out dist/proof-surface-contract-v0.1
 ```
 
+## Research harness
+
+The draft research harness scores proof-surface cases across schema validity,
+evidence coverage, actionability, non-authority language, and witness/provenance
+presence.
+
+```bash
+python scripts/score_proof_surface_research.py
+```
+
+See `docs/PROOF-SURFACE-RESEARCH-HARNESS-v0.1.md`.
+
 ## Authorship
 
 Created and maintained by Zain Dana Harper. Claude Code contributed to the
