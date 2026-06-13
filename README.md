@@ -179,6 +179,12 @@ The validator is intentionally strict for the v0.1 contract: unexpected root,
 claim, or check fields are reported as errors instead of silently drifting the
 interop shape.
 
+Export the portable contract bundle:
+
+```bash
+python scripts/export_proof_surface_contract.py --out dist/proof-surface-contract-v0.1
+```
+
 ## Authorship
 
 Created and maintained by Zain Dana Harper. Claude Code contributed to the
