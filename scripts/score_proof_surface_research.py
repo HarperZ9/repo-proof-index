@@ -99,6 +99,8 @@ def witness_or_provenance_presence(packet: dict[str, Any]) -> bool:
     for check in checks:
         if not isinstance(check, dict):
             continue
+        if check.get("status") != "pass":
+            continue
         text = " ".join(
             str(check.get(field, "")).lower() for field in ("tool", "summary")
         )
