@@ -31,10 +31,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    rows = load_rows(args.paths, root=args.root, contracts_dir=args.contracts_dir)
+    try:
+        rows = load_rows(args.paths, root=args.root, contracts_dir=args.contracts_dir)
+    except (FileNotFoundError, OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"error: {exc}")
+        return 1
     if args.json:
         print(json.dumps([asdict(row) for row in rows], indent=2))
     else:
         print(format_table(rows))
     return 0
-

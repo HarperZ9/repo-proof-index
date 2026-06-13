@@ -50,6 +50,15 @@ Run the bundled quick demo:
 repo-proof-index examples/contracts/*.json
 ```
 
+Malformed input example:
+
+```bash
+repo-proof-index examples/malformed/not-object.json
+```
+
+Expected behavior: the command prints an `error:` line and exits with status
+`1` instead of producing a proof row.
+
 ## What it indexes
 
 Known shapes:
