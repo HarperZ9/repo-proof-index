@@ -196,6 +196,8 @@ python scripts/score_proof_surface_research.py
 ```
 
 See `docs/PROOF-SURFACE-RESEARCH-HARNESS-v0.1.md`.
+Case contribution guidance lives at
+`docs/PROOF-SURFACE-CASE-CONTRIBUTING.md`.
 
 ## Authorship
 
