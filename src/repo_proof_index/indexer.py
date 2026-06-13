@@ -80,6 +80,16 @@ def _backend_evidence(data: dict[str, Any]) -> str:
     return ", ".join(f"{status}={count}" for status, count in sorted(counts.items()))
 
 
+def _proof_surface_evidence(data: dict[str, Any]) -> str:
+    checks = data.get("checks")
+    actions = data.get("action_items")
+    claims = data.get("claims")
+    check_count = len(checks) if isinstance(checks, list) else 0
+    action_count = len(actions) if isinstance(actions, list) else 0
+    claim_count = len(claims) if isinstance(claims, list) else 0
+    return f"claims={claim_count}, checks={check_count}, actions={action_count}"
+
+
 def _relative(path: Path, base: Path) -> str:
     try:
         return path.resolve().relative_to(base.resolve()).as_posix()
@@ -126,6 +136,16 @@ def summarize_contract(path: Path, base: Path | None = None) -> ProofRow:
             surface=witness_id,
             status=_as_text(data.get("verdict")),
             evidence=_as_text(data.get("notes"), "receipt available"),
+            path=rel_path,
+        )
+
+    if "proof_surface_version" in data and "packet_id" in data:
+        return ProofRow(
+            contract=_as_text(data.get("packet_id")),
+            kind="proof-surface-packet",
+            surface=_as_text(data.get("surface")),
+            status=_as_text(data.get("status")),
+            evidence=_proof_surface_evidence(data),
             path=rel_path,
         )
 

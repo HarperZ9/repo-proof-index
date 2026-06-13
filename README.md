@@ -65,6 +65,7 @@ Expected behavior: the command prints an `error:` line and exits with status
 
 Known shapes:
 
+- proof-surface interop packets with `proof_surface_version` and `packet_id`
 - product use-case manifests with `manifest_id` and `product`
 - backend capability descriptors with `descriptor_id` and `backends`
 - witness receipts with `receipt_id` and `verdict`
@@ -147,6 +148,21 @@ contracts and receipts -> proof index -> report -> reviewer handoff
 
 Its job is to make proof artifacts visible enough for a maintainer, reviewer,
 client, or employer to see what exists and what still needs a stronger gate.
+
+## Proof-surface interop packet
+
+The `schemas/proof-surface-packet.schema.json` file defines a small shared
+packet for release-readiness evidence. It is intentionally neutral: independent
+tools can publish claims, checks, and action items without asking any one tool to
+become the authority.
+
+```text
+surface claim -> evidence pointer -> check result -> action item
+```
+
+`repo-proof-index` recognizes these packets as `proof-surface-packet` rows and
+summarizes their claim, check, and action counts. See
+`examples/contracts/proof-surface-packet.json`.
 
 ## Authorship
 
