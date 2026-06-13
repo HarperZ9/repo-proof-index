@@ -3,6 +3,8 @@
 These fixtures define the smallest shared expectations for proof-surface packet
 producers and consumers.
 
+Machine-readable fixture metadata lives in `manifest.json`.
+
 Expected outcomes:
 
 | Fixture | Expected |
