@@ -16,3 +16,4 @@ jobs:
       - run: python -m pytest
       - run: python scripts/check_proof_surface_conformance.py
       - run: python scripts/export_proof_surface_contract.py --out /tmp/proof-surface-contract-v0.1
+      - run: python scripts/score_proof_surface_research.py
