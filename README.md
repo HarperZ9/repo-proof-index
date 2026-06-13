@@ -162,7 +162,8 @@ surface claim -> evidence pointer -> check result -> action item
 
 `repo-proof-index` recognizes these packets as `proof-surface-packet` rows and
 summarizes their claim, check, and action counts. See
-`examples/contracts/proof-surface-packet.json`.
+`examples/contracts/proof-surface-packet.json` and
+`docs/PROOF-SURFACE-INTEROP.md`.
 
 ## Authorship
 
