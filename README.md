@@ -1,7 +1,9 @@
 # repo-proof-index
 
-`repo-proof-index` turns JSON proof contracts, receipts, and capability
-descriptors into a compact table or JSON index.
+`repo-proof-index` turns scattered proof artifacts into a reviewer-readable
+index. Feed it JSON proof contracts, proof-surface packets, witness receipts,
+and backend descriptors; it returns the compact view a maintainer needs before
+a release-readiness or diligence handoff.
 
 The parser is intentionally schema-tolerant. Unknown contract shapes still get
 best-effort identifiers, status, surface, evidence, and source path fields.

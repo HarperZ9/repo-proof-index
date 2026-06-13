@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "repo-proof-index"
 version = "0.1.0"
-description = "Schema-tolerant proof contract index CLI"
+description = "Reviewer-ready index CLI for proof packets, receipts, and JSON contracts"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Zain Dana Harper" }]
-keywords = ["json", "proof", "contracts", "cli"]
+keywords = ["json", "proof", "receipts", "evidence", "cli"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",
@@ -31,4 +31,3 @@ repo-proof-index = "repo_proof_index.cli:main"
 addopts = "-q"
 pythonpath = ["src"]
 testpaths = ["tests"]
-
