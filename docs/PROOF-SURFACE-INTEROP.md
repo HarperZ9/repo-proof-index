@@ -85,6 +85,17 @@ model-provenance-validator *.provenance.json --proof-packet > provenance.packet.
 repo-proof-index public-surface.packet.json provenance.packet.json --summary
 ```
 
+## Conformance fixtures
+
+Small v0.1 fixtures live under:
+
+```text
+conformance/proof-surface/v0.1/
+```
+
+They give producers and consumers a reproducible baseline for what the packet
+contract accepts and rejects.
+
 ## Why it matters
 
 Modern AI-assisted work creates claims faster than teams can review them. A
