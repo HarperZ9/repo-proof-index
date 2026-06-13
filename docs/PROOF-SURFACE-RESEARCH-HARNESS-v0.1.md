@@ -40,6 +40,12 @@ The initial cases cover:
 - overclaiming authority language;
 - missing witness or provenance support.
 
+Contribution guidance lives at:
+
+```text
+docs/PROOF-SURFACE-CASE-CONTRIBUTING.md
+```
+
 ## Runner
 
 Run:
