@@ -16,6 +16,15 @@ class ProofRow:
     path: str
 
 
+@dataclass(frozen=True)
+class ProofSummary:
+    total: int
+    kinds: dict[str, int]
+    statuses: dict[str, int]
+    evidence_gaps: int
+    action_items: list[str]
+
+
 def _as_text(value: Any, default: str = "unknown") -> str:
     if value is None:
         return default
@@ -189,3 +198,69 @@ def format_table(rows: list[ProofRow]) -> str:
         )
     return "\n".join(lines)
 
+
+def _counts(values: Iterable[str]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _has_evidence_gap(row: ProofRow) -> bool:
+    evidence = row.evidence.strip().lower()
+    return not evidence or evidence.startswith("no ") or evidence == "unknown"
+
+
+def _needs_action(row: ProofRow) -> bool:
+    status = row.status.strip().lower()
+    statuses = {
+        "blocked",
+        "draft",
+        "drift",
+        "fail",
+        "needs-polish",
+        "planned",
+        "unknown",
+        "unverifiable",
+        "unverified",
+    }
+    return status in statuses or _has_evidence_gap(row)
+
+
+def summarize_rows(rows: list[ProofRow], action_limit: int = 8) -> ProofSummary:
+    action_items: list[str] = []
+    for row in rows:
+        if not _needs_action(row):
+            continue
+        reason = "add evidence" if _has_evidence_gap(row) else f"resolve {row.status}"
+        action_items.append(f"{row.contract}: {reason} ({row.path})")
+        if len(action_items) >= action_limit:
+            break
+    return ProofSummary(
+        total=len(rows),
+        kinds=_counts(row.kind for row in rows),
+        statuses=_counts(row.status for row in rows),
+        evidence_gaps=sum(1 for row in rows if _has_evidence_gap(row)),
+        action_items=action_items,
+    )
+
+
+def format_summary(summary: ProofSummary) -> str:
+    lines = [
+        f"total: {summary.total}",
+        "kinds: " + _format_counts(summary.kinds),
+        "statuses: " + _format_counts(summary.statuses),
+        f"evidence_gaps: {summary.evidence_gaps}",
+        "action_items:",
+    ]
+    if summary.action_items:
+        lines.extend(f"- {item}" for item in summary.action_items)
+    else:
+        lines.append("- none")
+    return "\n".join(lines)
+
+
+def _format_counts(counts: dict[str, int]) -> str:
+    if not counts:
+        return "none"
+    return ", ".join(f"{key}={value}" for key, value in counts.items())

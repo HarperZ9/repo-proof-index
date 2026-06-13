@@ -5,7 +5,7 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
-from .indexer import format_table, load_rows
+from .indexer import format_summary, format_table, load_rows, summarize_rows
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -26,6 +26,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory to scan when paths are omitted.",
     )
     parser.add_argument("--json", action="store_true", help="Print JSON rows.")
+    parser.add_argument(
+        "--summary",
+        action="store_true",
+        help="Print a release-readiness summary instead of individual rows.",
+    )
     return parser
 
 
@@ -36,7 +41,13 @@ def main(argv: list[str] | None = None) -> int:
     except (FileNotFoundError, OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"error: {exc}")
         return 1
-    if args.json:
+    if args.summary:
+        summary = summarize_rows(rows)
+        if args.json:
+            print(json.dumps(asdict(summary), indent=2))
+        else:
+            print(format_summary(summary))
+    elif args.json:
         print(json.dumps([asdict(row) for row in rows], indent=2))
     else:
         print(format_table(rows))

@@ -30,6 +30,8 @@ Index explicit JSON files:
 ```bash
 repo-proof-index contracts/*.json
 repo-proof-index contracts/*.json --json
+repo-proof-index contracts/*.json --summary
+repo-proof-index contracts/*.json --summary --json
 ```
 
 Index the common workspace location:
@@ -85,6 +87,22 @@ project-docs/roadmaps/contracts/*.json
 | `status` | Status, maturity, verdict, or fallback status. |
 | `evidence` | Short evidence summary from verification, claims, notes, or backend counts. |
 | `path` | Source JSON path in JSON mode. |
+
+## Release summary mode
+
+Use `--summary` when a reviewer needs the portfolio-level signal instead of
+row-by-row detail. The summary reports total artifacts, kind counts, status
+counts, evidence-gap count, and the first actionable rows that need stronger
+proof.
+
+```text
+total: 3
+kinds: backend-capability=1, product-use-case=1, witness-receipt=1
+statuses: MATCH=1, backend-matrix=1, release-candidate=1
+evidence_gaps: 0
+action_items:
+- none
+```
 
 ## Example table output
 
