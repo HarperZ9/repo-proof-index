@@ -118,6 +118,8 @@ Conformance fixtures live under:
 conformance/proof-surface/v0.1/
 ```
 
+The fixture directory includes `manifest.json` with expected outcomes.
+
 Run:
 
 ```bash

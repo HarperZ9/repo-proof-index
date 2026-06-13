@@ -102,6 +102,9 @@ conformance/proof-surface/v0.1/
 They give producers and consumers a reproducible baseline for what the packet
 contract accepts and rejects.
 
+The fixture directory includes `manifest.json` so compatible implementations can
+discover expected valid and invalid cases without scraping this document.
+
 Run the fixture set with:
 
 ```bash
