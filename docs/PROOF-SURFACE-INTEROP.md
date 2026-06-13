@@ -118,6 +118,12 @@ Run the fixture set with:
 python scripts/check_proof_surface_conformance.py
 ```
 
+Export a portable copy of the v0.1 contract with:
+
+```bash
+python scripts/export_proof_surface_contract.py --out dist/proof-surface-contract-v0.1
+```
+
 ## Why it matters
 
 Modern AI-assisted work creates claims faster than teams can review them. A
