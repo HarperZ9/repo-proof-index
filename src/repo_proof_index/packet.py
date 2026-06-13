@@ -82,10 +82,15 @@ def _reject_unknown(
         issues.append(PacketIssue(f"{path}.{field}", "unexpected field"))
 
 
-def _require_text(data: dict[str, Any], field: str, issues: list[PacketIssue]) -> None:
+def _require_text(
+    data: dict[str, Any],
+    field: str,
+    issues: list[PacketIssue],
+    path: str | None = None,
+) -> None:
     value = data.get(field)
     if not isinstance(value, str) or not value.strip():
-        issues.append(PacketIssue(f"$.{field}", "expected non-empty string"))
+        issues.append(PacketIssue(path or f"$.{field}", "expected non-empty string"))
 
 
 def _require_enum(
@@ -93,11 +98,12 @@ def _require_enum(
     field: str,
     allowed: set[str],
     issues: list[PacketIssue],
+    path: str | None = None,
 ) -> None:
     value = data.get(field)
     if value not in allowed:
         choices = ", ".join(sorted(allowed))
-        issues.append(PacketIssue(f"$.{field}", f"expected one of: {choices}"))
+        issues.append(PacketIssue(path or f"$.{field}", f"expected one of: {choices}"))
 
 
 def _validate_claims(value: Any, issues: list[PacketIssue]) -> None:
@@ -109,8 +115,8 @@ def _validate_claims(value: Any, issues: list[PacketIssue]) -> None:
             issues.append(PacketIssue(f"$.claims[{index}]", "expected object"))
             continue
         _reject_unknown(item, f"$.claims[{index}]", CLAIM_FIELDS, issues)
-        _require_text(item, f"claims[{index}].claim", issues)
-        _require_text(item, f"claims[{index}].evidence", issues)
+        _require_text(item, "claim", issues, f"$.claims[{index}].claim")
+        _require_text(item, "evidence", issues, f"$.claims[{index}].evidence")
 
 
 def _validate_checks(value: Any, issues: list[PacketIssue]) -> None:
@@ -122,9 +128,9 @@ def _validate_checks(value: Any, issues: list[PacketIssue]) -> None:
             issues.append(PacketIssue(f"$.checks[{index}]", "expected object"))
             continue
         _reject_unknown(item, f"$.checks[{index}]", CHECK_FIELDS, issues)
-        _require_text(item, f"checks[{index}].tool", issues)
-        _require_enum(item, f"checks[{index}].status", CHECK_STATUSES, issues)
-        _require_text(item, f"checks[{index}].summary", issues)
+        _require_text(item, "tool", issues, f"$.checks[{index}].tool")
+        _require_enum(item, "status", CHECK_STATUSES, issues, f"$.checks[{index}].status")
+        _require_text(item, "summary", issues, f"$.checks[{index}].summary")
 
 
 def _validate_action_items(value: Any, issues: list[PacketIssue]) -> None:

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from repo_proof_index.indexer import format_table, load_rows, summarize_contract
+from repo_proof_index.packet import validate_packet_file
 
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -45,3 +46,15 @@ def test_format_table_includes_contract_evidence() -> None:
     assert "product-use-case" in table
     assert "unit tests" in table
 
+
+def test_valid_proof_surface_packet_fixture_passes_validation() -> None:
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "conformance"
+        / "proof-surface"
+        / "v0.1"
+        / "valid"
+        / "minimal.packet.json"
+    )
+
+    assert validate_packet_file(path) == []
