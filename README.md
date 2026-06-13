@@ -166,6 +166,8 @@ surface claim -> evidence pointer -> check result -> action item
 summarizes their claim, check, and action counts. See
 `examples/contracts/proof-surface-packet.json` and
 `docs/PROOF-SURFACE-INTEROP.md`.
+The current version and known producer/consumer registry lives at
+`docs/PROOF-SURFACE-REGISTRY.json`.
 
 Validate packet shape locally:
 

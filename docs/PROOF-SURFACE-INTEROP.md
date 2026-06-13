@@ -105,6 +105,13 @@ contract accepts and rejects.
 The fixture directory includes `manifest.json` so compatible implementations can
 discover expected valid and invalid cases without scraping this document.
 
+A compact registry of current versions, known producers, and known consumers
+lives at:
+
+```text
+docs/PROOF-SURFACE-REGISTRY.json
+```
+
 Run the fixture set with:
 
 ```bash
