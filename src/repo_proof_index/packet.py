@@ -110,6 +110,8 @@ def _validate_claims(value: Any, issues: list[PacketIssue]) -> None:
     if not isinstance(value, list):
         issues.append(PacketIssue("$.claims", "expected array"))
         return
+    if not value:
+        issues.append(PacketIssue("$.claims", "expected at least 1 item(s)"))
     for index, item in enumerate(value):
         if not isinstance(item, dict):
             issues.append(PacketIssue(f"$.claims[{index}]", "expected object"))
@@ -123,6 +125,8 @@ def _validate_checks(value: Any, issues: list[PacketIssue]) -> None:
     if not isinstance(value, list):
         issues.append(PacketIssue("$.checks", "expected array"))
         return
+    if not value:
+        issues.append(PacketIssue("$.checks", "expected at least 1 item(s)"))
     for index, item in enumerate(value):
         if not isinstance(item, dict):
             issues.append(PacketIssue(f"$.checks[{index}]", "expected object"))
