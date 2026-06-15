@@ -58,3 +58,26 @@ def test_valid_proof_surface_packet_fixture_passes_validation() -> None:
     )
 
     assert validate_packet_file(path) == []
+
+
+def test_empty_claims_and_checks_are_invalid(tmp_path: Path) -> None:
+    path = tmp_path / "empty.packet.json"
+    path.write_text(
+        json.dumps(
+            {
+                "proof_surface_version": "0.1",
+                "packet_id": "empty",
+                "surface": "empty proof surface",
+                "status": "unknown",
+                "claims": [],
+                "checks": [],
+                "action_items": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    messages = {(issue.path, issue.message) for issue in validate_packet_file(path)}
+
+    assert ("$.claims", "expected at least 1 item(s)") in messages
+    assert ("$.checks", "expected at least 1 item(s)") in messages

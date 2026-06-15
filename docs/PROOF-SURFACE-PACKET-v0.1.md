@@ -43,7 +43,7 @@ verdict, authorization, or trust claim.
 
 ## Claims
 
-`claims` MUST be an array.
+`claims` MUST be an array with at least one item.
 
 Each claim MUST be an object with exactly:
 
@@ -57,7 +57,7 @@ other reviewable statement. It SHOULD NOT contain secrets or private payloads.
 
 ## Checks
 
-`checks` MUST be an array.
+`checks` MUST be an array with at least one item.
 
 Each check MUST be an object with exactly:
 

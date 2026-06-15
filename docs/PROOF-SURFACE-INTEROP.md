@@ -33,8 +33,19 @@ Minimum conceptual shape:
   "packet_id": "example",
   "surface": "public release readiness",
   "status": "needs-polish",
-  "claims": [],
-  "checks": [],
+  "claims": [
+    {
+      "claim": "A claim is present.",
+      "evidence": "Evidence pointer is present."
+    }
+  ],
+  "checks": [
+    {
+      "tool": "example",
+      "status": "unknown",
+      "summary": "No check has run yet."
+    }
+  ],
   "action_items": []
 }
 ```
@@ -100,7 +111,8 @@ conformance/proof-surface/v0.1/
 ```
 
 They give producers and consumers a reproducible baseline for what the packet
-contract accepts and rejects.
+contract accepts and rejects. In v0.1, claims and checks are required to contain
+at least one item; an empty evidence carrier is not valid proof-surface output.
 
 The fixture directory includes `manifest.json` so compatible implementations can
 discover expected valid and invalid cases without scraping this document.

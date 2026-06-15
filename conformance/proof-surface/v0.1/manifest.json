@@ -18,6 +18,11 @@
       "path": "invalid/bad-check-status.packet.json",
       "expected": "invalid",
       "reason": "check status must be pass, warn, fail, or unknown"
+    },
+    {
+      "path": "invalid/empty-claims-checks.packet.json",
+      "expected": "invalid",
+      "reason": "claims and checks must each contain at least one item"
     }
   ]
 }
