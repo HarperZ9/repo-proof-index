@@ -5,8 +5,9 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
+from proof_surface.packet import format_validation, validate_packet_file
+
 from .indexer import format_summary, format_table, load_rows, summarize_rows
-from .packet import format_validation, validate_packet_file
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from proof_surface.packet import validate_packet_file
 from repo_proof_index.indexer import format_table, load_rows, summarize_contract
-from repo_proof_index.packet import validate_packet_file
 
 
 FIXTURES = Path(__file__).parent / "fixtures"

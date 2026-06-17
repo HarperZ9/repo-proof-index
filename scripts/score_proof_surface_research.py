@@ -12,7 +12,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from repo_proof_index.packet import validate_packet
+from proof_surface.packet import validate_packet
 
 DEFAULT_CASES = ROOT / "research" / "proof-surface" / "v0.1" / "cases.json"
 DIMENSIONS = (

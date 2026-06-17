@@ -11,7 +11,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from repo_proof_index.packet import format_validation, validate_packet_file
+from proof_surface.packet import format_validation, validate_packet_file
 
 
 def build_parser() -> argparse.ArgumentParser:

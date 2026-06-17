@@ -29,8 +29,8 @@
       "role": "packet indexing and validation"
     },
     {
-      "name": "warden-reporting",
-      "command": "python tools/proof_surface_report.py <artifacts>",
+      "name": "proof-surface-report",
+      "command": "proof-surface-report <artifacts>",
       "role": "Markdown handoff report rendering"
     }
   ],
