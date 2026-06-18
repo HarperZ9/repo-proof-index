@@ -1,4 +1,12 @@
-# repo-proof-index
+# Repo Proof Index
+
+> Reviewer-ready index over proof packets and receipts — indexes the evidence; does not decide if it is enough.
+
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
+![version](https://img.shields.io/badge/version-0.1.1-informational.svg)
+[![CI](https://github.com/HarperZ9/repo-proof-index/actions/workflows/ci.yml/badge.svg)](https://github.com/HarperZ9/repo-proof-index/actions/workflows/ci.yml)
+[![part of: AI-accountability toolkit](https://img.shields.io/badge/part_of-AI--accountability_toolkit-7a5cff.svg)](https://harperz9.github.io)
 
 `repo-proof-index` turns scattered proof artifacts into a reviewer-readable
 index. Feed it JSON proof contracts, proof-surface packets, witness receipts,
@@ -201,7 +209,7 @@ See `docs/PROOF-SURFACE-RESEARCH-HARNESS-v0.1.md`.
 Case contribution guidance lives at
 `docs/PROOF-SURFACE-CASE-CONTRIBUTING.md`.
 
-## Authorship
-
-Created and maintained by Zain Dana Harper. Claude Code contributed to the
-initial implementation.
+---
+**Zain Dana Harper** — small tools with explicit edges.
+[Portfolio](https://harperz9.github.io) · [HarperZ9](https://github.com/HarperZ9)
+<sub>Built with Claude Code; reviewed, tested, and owned by me.</sub>
