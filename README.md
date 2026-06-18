@@ -35,6 +35,9 @@ python -m pytest
 
 ## Usage
 
+See [USAGE.md](USAGE.md) for a full usage guide with worked examples and
+expected output. A quick tour follows.
+
 Index explicit JSON files:
 
 ```bash
@@ -108,13 +111,19 @@ row-by-row detail. The summary reports total artifacts, kind counts, status
 counts, evidence-gap count, and the first actionable rows that need stronger
 proof.
 
+Running it over the bundled example contracts:
+
+```bash
+repo-proof-index examples/contracts/*.json --summary
+```
+
 ```text
-total: 3
-kinds: backend-capability=1, product-use-case=1, witness-receipt=1
-statuses: MATCH=1, backend-matrix=1, release-candidate=1
+total: 4
+kinds: backend-capability=1, product-use-case=1, proof-surface-packet=1, witness-receipt=1
+statuses: MATCH=1, backend-matrix=1, needs-polish=1, release-candidate=1
 evidence_gaps: 0
 action_items:
-- none
+- proof-surface-public-release-demo: resolve needs-polish (examples/contracts/proof-surface-packet.json)
 ```
 
 ## Example table output
