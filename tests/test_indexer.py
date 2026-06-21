@@ -40,6 +40,84 @@ def test_unknown_contract_shape_gets_best_effort_row(tmp_path: Path) -> None:
     assert row.status == "draft"
 
 
+def test_summarize_orca_organ_exchange_artifact(tmp_path: Path) -> None:
+    path = tmp_path / "organ-exchange.json"
+    path.write_text(
+        json.dumps(
+            {
+                "module_id": "orca.module.organ_exchange.bundle",
+                "summary": {
+                    "subject": "active-organ-pulse-smoke",
+                    "bundle_status": "pass",
+                    "entry_count": 3,
+                    "collected_count": 3,
+                    "organ_ids": [
+                        "eye.raw_rendering",
+                        "provenance.sensorium",
+                        "witness.emet",
+                    ],
+                    "receipt_kinds": [
+                        "emet-witness",
+                        "provenance-receipt",
+                        "raw-health",
+                    ],
+                },
+                "bundle": {"bundle_id": "orb-run-active"},
+            },
+            indent=2,
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    row = summarize_contract(path, tmp_path)
+
+    assert row.contract == "orb-run-active"
+    assert row.kind == "organ-exchange"
+    assert row.surface == "active-organ-pulse-smoke"
+    assert row.status == "pass"
+    assert row.evidence == "entries=3, collected=3, organs=3, receipts=3"
+
+
+def test_summarize_organ_receipt_bundle(tmp_path: Path) -> None:
+    path = tmp_path / "organ-receipt-bundle.json"
+    path.write_text(
+        json.dumps(
+            {
+                "organ_bundle_version": "0.1",
+                "bundle_id": "orb-demo",
+                "subject": "workspace-organ-health",
+                "entries": [
+                    {
+                        "entry_id": "raw-health",
+                        "organ_id": "eye.raw_rendering",
+                        "receipt_kind": "raw-health",
+                        "status": "pass",
+                    },
+                    {
+                        "entry_id": "emet-witness",
+                        "organ_id": "witness.emet",
+                        "receipt_kind": "emet-witness",
+                        "status": "warn",
+                    },
+                ],
+                "edges": [{"from": "raw-health", "to": "emet-witness"}],
+            },
+            indent=2,
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    row = summarize_contract(path, tmp_path)
+
+    assert row.contract == "orb-demo"
+    assert row.kind == "organ-receipt-bundle"
+    assert row.surface == "workspace-organ-health"
+    assert row.status == "warn"
+    assert row.evidence == "entries=2, edges=1, organs=2, receipts=2"
+
+
 def test_format_table_includes_contract_evidence() -> None:
     table = format_table(load_rows([FIXTURES / "product.json"], root=FIXTURES))
 

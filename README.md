@@ -81,6 +81,8 @@ Expected behavior: the command prints an `error:` line and exits with status
 Known shapes:
 
 - proof-surface interop packets with `proof_surface_version` and `packet_id`
+- ORCA organ exchange artifacts from `orca.module.organ_exchange.bundle`
+- proof-surface organ receipt bundles with `organ_bundle_version` and `bundle_id`
 - product use-case manifests with `manifest_id` and `product`
 - backend capability descriptors with `descriptor_id` and `backends`
 - witness receipts with `receipt_id` and `verdict`

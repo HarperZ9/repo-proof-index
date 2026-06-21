@@ -5,6 +5,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
+from .organ_rows import (
+    is_orca_organ_exchange,
+    is_organ_receipt_bundle,
+    summarize_orca_organ_exchange,
+    summarize_organ_receipt_bundle,
+)
+
 
 @dataclass(frozen=True)
 class ProofRow:
@@ -148,6 +155,12 @@ def summarize_contract(path: Path, base: Path | None = None) -> ProofRow:
             evidence=_proof_surface_evidence(data),
             path=rel_path,
         )
+
+    if is_orca_organ_exchange(data):
+        return ProofRow(**summarize_orca_organ_exchange(data), path=rel_path)
+
+    if is_organ_receipt_bundle(data):
+        return ProofRow(**summarize_organ_receipt_bundle(data), path=rel_path)
 
     return ProofRow(
         contract=_as_text(
