@@ -1,9 +1,9 @@
 # Usage Guide
 
 `repo-proof-index` indexes scattered JSON proof artifacts (proof contracts,
-proof-surface packets, witness receipts, backend descriptors) into a
-reviewer-readable table, JSON rows, or a release-readiness summary. It indexes
-the evidence; it does not decide whether the evidence is enough.
+proof-surface packets, witness receipts, organ bundles, backend descriptors)
+into a reviewer-readable table, JSON rows, or a release-readiness summary. It
+indexes the evidence; it does not decide whether the evidence is enough.
 
 This guide covers the real command-line interface and the importable Python
 API. Every command, flag, and function shown here exists in the current
