@@ -1,5 +1,40 @@
 # Repo Proof Index
 
+![Repo Proof Index hero](docs/brand/repo-proof-index-hero.png)
+
+> Build a reviewer-ready index over proof packets, receipts, and contracts.
+
+Repo Proof Index scans proof artifacts and returns the compact view a maintainer
+needs before release review: kind, surface, status, evidence summary, and source
+path. It indexes evidence; it does not decide whether the evidence is enough.
+
+## Why it matters
+
+As a repo gains receipts and proof packets, reviewers need a fast way to find
+what each artifact claims and where the evidence lives. This tool makes that
+proof layer navigable.
+
+## Try it
+
+```bash
+python -m pip install -e ".[test]"
+repo-proof-index examples/contracts/*.json --summary
+python -m pytest
+```
+
+## What to test first
+
+- Index the bundled example contracts.
+- Run `repo-proof-index --root .` in a repo with proof artifacts.
+- Use `--validate` on a proof-surface packet.
+
+## Current status
+
+Python package and CLI with tolerant JSON parsing and proof-surface integration.
+It produces review indexes and summaries, not compliance findings.
+
+## Existing technical notes
+
 > Reviewer-ready index over proof packets and receipts — indexes the evidence; does not decide if it is enough.
 
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
