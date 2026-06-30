@@ -200,6 +200,6 @@ contain a top-level JSON object.
 
 ## See also
 
-- [README.md](README.md) — overview, indexed shapes, and output fields.
-- `examples/demo.py` — runnable end-to-end demo of the API and CLI.
-- `docs/PROOF-SURFACE-INTEROP.md` — proof-surface packet interop notes.
+- [README.md](README.md) -- overview, indexed shapes, and output fields.
+- `examples/demo.py` -- runnable end-to-end demo of the API and CLI.
+- `docs/PROOF-SURFACE-INTEROP.md` -- proof-surface packet interop notes.
