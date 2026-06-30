@@ -35,7 +35,7 @@ It produces review indexes and summaries, not compliance findings.
 
 ## Existing technical notes
 
-> Reviewer-ready index over proof packets and receipts — indexes the evidence; does not decide if it is enough.
+> Reviewer-ready index over proof packets and receipts -- indexes the evidence; does not decide if it is enough.
 
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
@@ -256,7 +256,7 @@ Case contribution guidance lives at
 `docs/PROOF-SURFACE-CASE-CONTRIBUTING.md`.
 
 ---
-**Zain Dana Harper** — small tools with explicit edges.
+**Zain Dana Harper** -- small tools with explicit edges.
 [Portfolio](https://harperz9.github.io) · [HarperZ9](https://github.com/HarperZ9)
 <sub>Built with Claude Code; reviewed, tested, and owned by me.</sub>
 

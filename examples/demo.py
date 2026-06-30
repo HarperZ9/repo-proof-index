@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Best-effort demo — not runtime-verified by author.
+# Best-effort demo -- not runtime-verified by author.
 """End-to-end demo of repo-proof-index against the bundled example contracts.
 
 Exercises the real public API (load_rows, format_table, summarize_rows,
