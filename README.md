@@ -178,12 +178,12 @@ backend-capability     | rust                   | backend-matrix     | pass=1, p
 ```json
 [
   {
-    "contract": "product-usecase-quanta-ui",
+    "contract": "product-usecase-build-ui",
     "kind": "product-use-case",
-    "surface": "quanta-ui",
+    "surface": "build-ui",
     "status": "private-gated",
     "evidence": "pass: 17 tests passed",
-    "path": "contracts/quanta-ui.json"
+    "path": "contracts/build-ui.json"
   }
 ]
 ```
