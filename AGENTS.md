@@ -5,9 +5,9 @@
 This repository is a public Python package and CLI for indexing proof contracts,
 receipts, backend descriptors, and proof-surface interop packets.
 
-Use this file for work in this repo. The workspace root instructions still
-apply, especially the rules about secrets, `.env` files, and keeping private
-payloads or operational material out of public repositories.
+Use this file for work in this repo. Hygiene rules are stated here so they travel
+with the repo when it is cloned on its own: never commit secrets, `.env` files,
+tokens, or private payloads or operational material to this public repository.
 
 ## Product Boundary
 
