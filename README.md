@@ -1,4 +1,4 @@
-<p align="center"><img src=".github/assets/zentropy-banner.png" alt="repo-proof-index" width="100%"></p>
+<p align="center"><img src="docs/art/repo-proof-index-header.svg" alt="Repo Proof Index" width="100%"></p>
 
 # Repo Proof Index
 
@@ -56,6 +56,8 @@ best-effort identifiers, status, surface, evidence, and source path fields.
 Use it when a repo or workspace has proof artifacts but no quick way to see
 what they claim, what surface they describe, what status they report, and where
 the evidence lives.
+
+![Eight stages of indexing one proof artifact: paths, read, match, row, evidence, relative, table, and exit. Paths are either the files you name on the command line, sorted, or every JSON file in a directory that is scanned when you name none. Each file must hold one JSON object; a list or a string raises before any shape is tried. Six shapes are recognized in a fixed order and the first match wins, with a seventh fallback that catches everything else, so an unrecognized shape still gets a row. Every row carries the same six fields: contract, kind, surface, status, evidence, and path. The evidence line prefers checks that passed, falling back to the first claim, then to a free note, then to a line saying there is no summary. Paths are shown relative to the base you chose, and stay absolute when they sit outside it. The table prints four of the six fields, clipped to fixed widths with a trailing ellipsis, and the contract identifier and the path reach only the JSON output. The exit code is zero once the rows print. Three outcomes: indexed, refused, and not found.](docs/art/index-lane.svg)
 
 ## Install
 
@@ -165,6 +167,8 @@ action_items:
 - proof-surface-public-release-demo: resolve needs-polish (examples/contracts/proof-surface-packet.json)
 ```
 
+![Eleven shapes a proof file can arrive in, one to a row, with what the index reports and why it lands there. A manifest with a product is read as a product use case, taking maturity as the status. A descriptor with backends is read as a backend capability, carrying a constant status and an evidence line that counts backends by status. A receipt with a verdict is read as a witness receipt, taking the verdict as the status and naming the witness implementation as the surface. A packet version and identifier is read as a proof-surface packet, whose evidence counts claims, checks and action items. An exact module identifier with a summary object is read as an organ exchange. A bundle version with entries is read as an organ receipt bundle, whose status is the worst entry status in a fixed order of block, warn, needs-human and unverified. Anything matching none of the six falls back to a plain contract, with identifier, surface and status each taken from the first candidate field present. Recognition stops at the first match, so a file carrying two shapes is read as the earlier one and the later fields are never seen. A file with no identifier borrows the stem of its own path. The accented row is the evidence gap: the test is a string test, so a note reading no regressions found is counted as a missing summary. A root that is not a JSON object is refused before any shape is tried, and the command exits one.](docs/art/shape-table.svg)
+
 ## Example table output
 
 ```text
@@ -197,6 +201,8 @@ backend-capability     | rust                   | backend-matrix     | pass=1, p
 - It does not read private payloads referenced by a contract.
 - It does not decide whether a claim is true.
 - It does not replace tests, audits, or release review.
+
+![Eight stages of a review summary: rows, kinds, statuses, gaps, nine, reason, eight, and summary. The rows are every artifact already indexed, in path order. Kinds are counted and sorted by name, so the mix of artifact types is visible at a glance. Statuses are counted the same way. An evidence gap is decided by a string test on the evidence line: empty, the word unknown, or any text beginning with the word no. Nine status values put a row on the action list, among them blocked, draft, drift, fail, planned, unknown, and unverified. The constant status a backend descriptor carries is not among them, so a backend matrix never lands on the list by status alone. Each item names a reason, either to add evidence or to resolve the status it carries, alongside the path that holds it. The list stops at eight items and does not say how many were left out. The summary carries five fields and prints as text or as JSON. Three outcomes: clear, action, and truncated.](docs/art/review-lane.svg)
 
 ## Release-readiness use
 
