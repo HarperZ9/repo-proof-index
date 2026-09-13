@@ -8,5 +8,5 @@ __all__ = [
     "load_rows",
     "summarize_contract",
 ]
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
