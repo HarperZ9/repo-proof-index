@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -11,6 +10,7 @@ from .organ_rows import (
     summarize_orca_organ_exchange,
     summarize_organ_receipt_bundle,
 )
+from .strict_json import load_json_object
 
 
 @dataclass(frozen=True)
@@ -158,9 +158,7 @@ def _relative(path: Path, base: Path) -> str:
 
 def summarize_contract(path: Path, base: Path | None = None) -> ProofRow:
     base = base or path.parent
-    data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict):
-        raise ValueError(f"{path} did not contain a JSON object")
+    data = load_json_object(path)
 
     rel_path = _relative(path, base)
 

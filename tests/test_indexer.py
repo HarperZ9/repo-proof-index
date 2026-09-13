@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from proof_surface.packet import validate_packet_file
 from repo_proof_index.indexer import format_table, load_rows, summarize_contract, summarize_rows
 
@@ -136,6 +137,53 @@ def test_valid_proof_surface_packet_fixture_passes_validation() -> None:
     )
 
     assert validate_packet_file(path) == []
+
+
+@pytest.mark.parametrize(
+    ("body", "message"),
+    [
+        (
+            """
+            {
+              "proof_surface_version": "0.1",
+              "packet_id": "dup-status",
+              "surface": "evaluator-claim-handoff",
+              "status": "ready",
+              "status": "needs-polish",
+              "claims": [{"claim": "claim", "evidence": "evidence"}],
+              "checks": [{"tool": "self-report", "status": "pass", "summary": "seen"}],
+              "action_items": []
+            }
+            """,
+            "duplicate JSON key: status",
+        ),
+        (
+            """
+            {
+              "proof_surface_version": "0.1",
+              "packet_id": "first-id",
+              "packet_id": "second-id",
+              "surface": "evaluator-claim-handoff",
+              "status": "ready",
+              "claims": [{"claim": "claim", "evidence": "evidence"}],
+              "checks": [{"tool": "self-report", "status": "pass", "summary": "seen"}],
+              "action_items": []
+            }
+            """,
+            "duplicate JSON key: packet_id",
+        ),
+        ('{"id": "nan-contract", "status": NaN}', "non-finite JSON value: NaN"),
+        ('{"id": "inf-contract", "status": Infinity}', "non-finite JSON value: Infinity"),
+    ],
+)
+def test_api_rejects_duplicate_keys_and_nonfinite_json(
+    tmp_path: Path, body: str, message: str
+) -> None:
+    path = tmp_path / "bad.json"
+    path.write_text(body, encoding="utf-8")
+
+    with pytest.raises(ValueError, match=message):
+        summarize_contract(path, tmp_path)
 
 
 def test_proof_surface_ready_packet_is_marked_producer_declared_not_verified(

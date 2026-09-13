@@ -5,9 +5,10 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
-from proof_surface.packet import format_validation, validate_packet_file
+from proof_surface.packet import Issue, format_validation, validate_packet
 
 from .indexer import format_summary, format_table, load_rows, summarize_rows
+from .strict_json import load_json_object
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -47,7 +48,7 @@ def main(argv: list[str] | None = None) -> int:
         if not args.paths:
             print("error: --validate requires at least one packet path")
             return 1
-        validation = [(path, validate_packet_file(path)) for path in args.paths]
+        validation = [(path, _validate_packet_file(path)) for path in args.paths]
         results = [
             {"path": str(path), "valid": not issues, "errors": [asdict(issue) for issue in issues]}
             for path, issues in validation
@@ -74,3 +75,10 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(format_table(rows))
     return 0
+
+
+def _validate_packet_file(path: Path) -> list[Issue]:
+    try:
+        return validate_packet(load_json_object(path))
+    except (FileNotFoundError, OSError, ValueError, json.JSONDecodeError) as exc:
+        return [Issue("$", str(exc))]
