@@ -51,8 +51,10 @@ falls back to `<root>/project-docs/roadmaps/contracts/*.json`.
 Exit codes: `0` on success; `1` when a contract cannot be read/parsed, when
 `--validate` finds an invalid packet, or when `--validate` is given no paths.
 Parsing is strict for both indexing and `--validate`: duplicate JSON keys and
-non-finite values such as `NaN` and `Infinity` are rejected before any contract
-or packet fields are interpreted.
+non-finite values such as `NaN`, `Infinity`, and overflowing floats are rejected
+before any contract or packet fields are interpreted. Files over 1,048,576
+bytes and JSON nesting deeper than 200 levels are rejected with explicit
+messages.
 
 ## Worked examples
 

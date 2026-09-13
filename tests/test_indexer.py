@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 from proof_surface.packet import validate_packet_file
 from repo_proof_index.indexer import format_table, load_rows, summarize_contract, summarize_rows
+from repo_proof_index.strict_json import MAX_JSON_DEPTH
 
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -174,6 +175,11 @@ def test_valid_proof_surface_packet_fixture_passes_validation() -> None:
         ),
         ('{"id": "nan-contract", "status": NaN}', "non-finite JSON value: NaN"),
         ('{"id": "inf-contract", "status": Infinity}', "non-finite JSON value: Infinity"),
+        ('{"id": "overflow-contract", "status": 1e999}', "non-finite JSON value: 1e999"),
+        (
+            '{"id": "negative-overflow-contract", "status": -1e999}',
+            "non-finite JSON value: -1e999",
+        ),
     ],
 )
 def test_api_rejects_duplicate_keys_and_nonfinite_json(
@@ -183,6 +189,14 @@ def test_api_rejects_duplicate_keys_and_nonfinite_json(
     path.write_text(body, encoding="utf-8")
 
     with pytest.raises(ValueError, match=message):
+        summarize_contract(path, tmp_path)
+
+
+def test_api_rejects_excessively_nested_json(tmp_path: Path) -> None:
+    path = tmp_path / "too-deep.json"
+    path.write_text("[" * (MAX_JSON_DEPTH + 1) + "]" * (MAX_JSON_DEPTH + 1), encoding="utf-8")
+
+    with pytest.raises(ValueError, match=f"JSON nesting exceeds {MAX_JSON_DEPTH} levels"):
         summarize_contract(path, tmp_path)
 
 

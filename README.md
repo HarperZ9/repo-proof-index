@@ -52,8 +52,9 @@ a release-readiness or diligence handoff.
 
 The parser is intentionally schema-tolerant. Unknown contract shapes still get
 best-effort identifiers, status, surface, evidence, and source path fields.
-The JSON reader is strict before that shape-tolerant layer runs: duplicate keys
-and non-finite values such as `NaN` and `Infinity` are rejected for both
+The JSON reader is strict before that shape-tolerant layer runs: duplicate keys,
+non-finite values such as `NaN`, `Infinity`, and overflowing floats, files over
+1,048,576 bytes, and JSON nesting deeper than 200 levels are rejected for both
 indexing and proof-surface validation.
 
 Use it when a repo or workspace has proof artifacts but no quick way to see
