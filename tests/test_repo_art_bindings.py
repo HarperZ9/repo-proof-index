@@ -26,6 +26,14 @@ SHAPES = (
     ({"descriptor_id": "d", "backends": []}, "backend-capability"),
     ({"receipt_id": "r", "verdict": "pass"}, "witness-receipt"),
     ({"proof_surface_version": "0.1", "packet_id": "p"}, "proof-surface-packet"),
+    (
+        {
+            "version": "research-claim-proof-packet/v0",
+            "packet_id": "rc",
+            "verdicts": {"overall": "UNVERIFIABLE", "per_check": []},
+        },
+        "research-claim-packet",
+    ),
     ({"module_id": "orca.module.organ_exchange.bundle", "summary": {}}, "organ-exchange"),
     ({"organ_bundle_version": "1", "bundle_id": "b", "entries": []}, "organ-receipt-bundle"),
 )
@@ -37,7 +45,7 @@ def _row(tmp_path, name, data):
     return summarize_contract(path, tmp_path)
 
 
-def test_six_shapes_are_recognized_and_each_reports_its_own_kind(tmp_path) -> None:
+def test_known_shapes_are_recognized_and_each_reports_its_own_kind(tmp_path) -> None:
     for index, (data, kind) in enumerate(SHAPES):
         assert _row(tmp_path, "shape%d" % index, data).kind == kind, kind
 
@@ -77,7 +85,7 @@ def test_a_root_that_is_not_an_object_is_refused_before_any_shape_is_tried(tmp_p
         summarize_contract(path)
 
 
-def test_every_row_carries_the_same_six_fields(tmp_path) -> None:
+def test_every_row_carries_the_same_eight_fields(tmp_path) -> None:
     row = _row(tmp_path, "any", {"id": "x"})
     assert list(asdict(row)) == [
         "contract",
@@ -86,6 +94,8 @@ def test_every_row_carries_the_same_six_fields(tmp_path) -> None:
         "status",
         "evidence",
         "path",
+        "producer_status",
+        "verification_state",
     ]
 
 
@@ -124,7 +134,7 @@ def test_a_path_is_shown_against_the_base_and_stays_whole_outside_it(tmp_path) -
     assert summarize_contract(path, elsewhere).path == path.as_posix()
 
 
-def test_the_table_prints_four_fields_and_the_other_two_reach_only_json(tmp_path) -> None:
+def test_the_table_prints_four_fields_and_the_other_four_reach_only_json(tmp_path) -> None:
     data = {"id": "row-contract-id", "name": "surf", "status": "pass", "notes": "seen"}
     row = _row(tmp_path, "row-file", data)
     table = format_table([row])
@@ -205,16 +215,24 @@ def test_the_bundle_status_is_the_worst_entry_status_in_a_fixed_order(tmp_path) 
         assert _row(tmp_path, "b%d" % index, data).status == expected, statuses
 
 
-def test_the_summary_carries_five_fields_counted_and_sorted(tmp_path) -> None:
+def test_the_summary_carries_six_fields_counted_and_sorted(tmp_path) -> None:
     rows = [
         _row(tmp_path, "z", {"receipt_id": "z", "verdict": "pass", "notes": "seen"}),
         _row(tmp_path, "a", {"manifest_id": "a", "product": "p", "maturity": "shipped", "notes": "seen"}),
         _row(tmp_path, "m", {"manifest_id": "m", "product": "p", "maturity": "draft", "notes": "seen"}),
     ]
     summary = summarize_rows(rows)
-    assert list(asdict(summary)) == ["total", "kinds", "statuses", "evidence_gaps", "action_items"]
+    assert list(asdict(summary)) == [
+        "total",
+        "kinds",
+        "statuses",
+        "verification_states",
+        "evidence_gaps",
+        "action_items",
+    ]
     assert list(summary.kinds) == ["product-use-case", "witness-receipt"]
     assert list(summary.statuses) == ["draft", "pass", "shipped"]
+    assert summary.verification_states == {"not_assessed": 3}
 
 
 def test_named_files_are_sorted_and_a_missing_directory_is_named(tmp_path) -> None:

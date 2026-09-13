@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from proof_surface.packet import validate_packet_file
-from repo_proof_index.indexer import format_table, load_rows, summarize_contract
+from repo_proof_index.indexer import format_table, load_rows, summarize_contract, summarize_rows
 
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -136,6 +136,120 @@ def test_valid_proof_surface_packet_fixture_passes_validation() -> None:
     )
 
     assert validate_packet_file(path) == []
+
+
+def test_proof_surface_ready_packet_is_marked_producer_declared_not_verified(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "false-success-self-declared-match.packet.json"
+    path.write_text(
+        json.dumps(
+            {
+                "proof_surface_version": "0.1",
+                "packet_id": "false-success-self-declared-match-20260913",
+                "surface": "evaluator-claim-handoff",
+                "status": "ready",
+                "claims": [
+                    {
+                        "claim": "Synthetic evaluator record fail-001 is MATCH.",
+                        "evidence": (
+                            "producer self-declared MATCH only; intentionally omits "
+                            "Crucible measurement that shows absolute_score_error=1.0 > 0.5"
+                        ),
+                    }
+                ],
+                "checks": [
+                    {
+                        "tool": "producer-self-report",
+                        "status": "pass",
+                        "summary": "Self-reported green check; no verifier command embedded.",
+                    }
+                ],
+                "action_items": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    row = summarize_contract(path, tmp_path)
+    summary = summarize_rows([row])
+
+    assert row.status == "ready"
+    assert row.producer_status == "ready"
+    assert row.verification_state == "not_verified"
+    assert row.evidence == (
+        "declared=ready, verification=not_verified, claims=1, checks=1, actions=0"
+    )
+    assert summary.action_items == [
+        "false-success-self-declared-match-20260913: verify producer-declared ready "
+        "(false-success-self-declared-match.packet.json)"
+    ]
+
+
+def test_research_claim_packet_indexes_reported_verdict_without_verifying(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "research-claim-packet.json"
+    path.write_text(
+        json.dumps(
+            {
+                "version": "research-claim-proof-packet/v0",
+                "packet_id": "synthetic-evaluator-claims-20260913",
+                "claim": (
+                    "Synthetic evaluator-claim packet preserves one correct claim, "
+                    "one wrong self-declared claim, and one missing-evidence claim."
+                ),
+                "scope": "Disposable public-clean handoff experiment.",
+                "sources": [
+                    {
+                        "availability": "open",
+                        "ref": "crucible/bundle/run.json",
+                        "sha256": "0" * 64,
+                    }
+                ],
+                "attempts": [
+                    {
+                        "attempt_id": "crucible-offline-recheck-20260913",
+                        "method": "python -m crucible run/review/verdicts",
+                        "result": "bounded",
+                        "artifact_ref": "crucible/bundle/run.json",
+                    }
+                ],
+                "checks": [
+                    {"checker": "correct", "status": "pass", "evidence": ["MATCH"]},
+                    {"checker": "wrong", "status": "fail", "evidence": ["DRIFT"]},
+                    {
+                        "checker": "missing",
+                        "status": "unverifiable",
+                        "evidence": ["UNVERIFIABLE"],
+                    },
+                ],
+                "verdicts": {
+                    "overall": "UNVERIFIABLE",
+                    "per_check": [
+                        {"checker": "correct", "status": "MATCH"},
+                        {"checker": "wrong", "status": "DRIFT"},
+                        {"checker": "missing", "status": "UNVERIFIABLE"},
+                    ],
+                },
+                "promotion": "UNVERIFIABLE",
+                "uncertainty": ["missing evidence remains"],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    row = summarize_contract(path, tmp_path)
+
+    assert row.contract == "synthetic-evaluator-claims-20260913"
+    assert row.kind == "research-claim-packet"
+    assert row.status == "UNVERIFIABLE"
+    assert row.producer_status == "UNVERIFIABLE"
+    assert row.verification_state == "not_verified"
+    assert row.evidence == (
+        "reported=UNVERIFIABLE, verification=not_verified, "
+        "promotion=UNVERIFIABLE, checks: DRIFT=1, MATCH=1, UNVERIFIABLE=1"
+    )
 
 
 def test_empty_claims_and_checks_are_invalid(tmp_path: Path) -> None:

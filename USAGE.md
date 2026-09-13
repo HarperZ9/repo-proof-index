@@ -3,7 +3,9 @@
 `repo-proof-index` indexes scattered JSON proof artifacts (proof contracts,
 proof-surface packets, witness receipts, organ bundles, backend descriptors)
 into a reviewer-readable table, JSON rows, or a release-readiness summary. It
-indexes the evidence; it does not decide whether the evidence is enough.
+indexes the evidence; it does not decide whether the evidence is enough. A
+reported status from a producer is kept separate from Repo Proof Index's own
+verification state.
 
 This guide covers the real command-line interface and the importable Python
 API. Every command, flag, and function shown here exists in the current
@@ -85,7 +87,9 @@ Expected output:
     "surface": "sample-tool",
     "status": "release-candidate",
     "evidence": "pass: example tests passed",
-    "path": "examples/contracts/sample-product-usecase.json"
+    "path": "examples/contracts/sample-product-usecase.json",
+    "producer_status": "release-candidate",
+    "verification_state": "not_assessed"
   }
 ]
 ```
@@ -102,13 +106,31 @@ Expected output:
 total: 4
 kinds: backend-capability=1, product-use-case=1, proof-surface-packet=1, witness-receipt=1
 statuses: MATCH=1, backend-matrix=1, needs-polish=1, release-candidate=1
+verification_states: not_assessed=3, not_verified=1
 evidence_gaps: 0
 action_items:
 - proof-surface-public-release-demo: resolve needs-polish (examples/contracts/proof-surface-packet.json)
 ```
 
 Add `--json` (`--summary --json`) to get the same summary as a JSON object
-with `total`, `kinds`, `statuses`, `evidence_gaps`, and `action_items` keys.
+with `total`, `kinds`, `statuses`, `verification_states`, `evidence_gaps`, and
+`action_items` keys.
+
+### Verification-state boundary
+
+`status` is the artifact producer's reported state, preserved for backward
+compatibility. `producer_status` makes that source explicit.
+`verification_state` describes what Repo Proof Index did. For proof-surface
+v0.1 packets and research-claim packets it is `not_verified`, because the
+indexer validates shape and summarizes reported fields but does not execute
+packet-supplied verifier commands, open referenced evidence, or treat a claimed
+hash as semantic truth.
+
+The summary action list treats a producer-declared green status such as
+`ready`, `MATCH`, `pass`, or `verified` as actionable while its
+`verification_state` is `not_verified`. A self-declared green packet must stay
+visible as a verification task until another tool records an actual verifier
+result.
 
 ### 4. Validate a proof-surface packet
 
@@ -175,7 +197,9 @@ print(rows[0])
 # ProofRow(contract='sample-product-usecase', kind='product-use-case',
 #          surface='sample-tool', status='release-candidate',
 #          evidence='pass: example tests passed',
-#          path='examples/contracts/sample-product-usecase.json')
+#          path='examples/contracts/sample-product-usecase.json',
+#          producer_status='release-candidate',
+#          verification_state='not_assessed')
 
 # Render a table or a release-readiness summary.
 print(format_table(rows))
@@ -191,8 +215,8 @@ Key functions and types:
 | `format_table` | `format_table(rows)` | `str` |
 | `summarize_rows` | `summarize_rows(rows, action_limit=8)` | `ProofSummary` |
 | `format_summary` | `format_summary(summary)` | `str` |
-| `ProofRow` | frozen dataclass | fields: `contract, kind, surface, status, evidence, path` |
-| `ProofSummary` | frozen dataclass | fields: `total, kinds, statuses, evidence_gaps, action_items` |
+| `ProofRow` | frozen dataclass | fields: `contract, kind, surface, status, evidence, path, producer_status, verification_state` |
+| `ProofSummary` | frozen dataclass | fields: `total, kinds, statuses, verification_states, evidence_gaps, action_items` |
 
 `load_rows` raises `FileNotFoundError` when a fallback contracts directory does
 not exist, and `summarize_contract` raises `ValueError` when a file does not
