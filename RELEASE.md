@@ -10,8 +10,8 @@ and current public package behavior since v0.1.1.
 - Keeps `status` backward-compatible as the producer-reported value while adding
   `producer_status` and `verification_state` so a self-declared green proof row
   is not presented as independently verified by Repo Proof Index.
-- Marks proof-surface and research-claim packets as `not_verified` unless a
-  separate tool records actual verification.
+- These proof-surface and research-claim packets remain `not_verified` in this
+  index; assess a separate tool's verification result on its own evidence.
 - Rejects ambiguous or unsafe JSON inputs before indexing or validation:
   duplicate keys, `NaN`, `Infinity`, overflowing floats such as `1e999`, files
   over 1,048,576 bytes, and JSON nesting deeper than 200 levels.
@@ -21,12 +21,11 @@ and current public package behavior since v0.1.1.
 
 ## Verification
 
-Use current packaging tooling before running the package checks. Current
-Hatchling emits legal Core Metadata 2.5, so `twine>=7` is required for
-`twine check`; older Twine 6.2 rejects that metadata version even though the
-PyPA core metadata spec allows it.
+Use the packaging tooling below before running the package checks. This release
+procedure was verified with Twine 7.0.0. In local release prep, Twine 6.2.0
+failed on Core Metadata 2.5 artifacts emitted by Hatchling 1.32.0.
 
-- `python -m pip install --upgrade build "twine>=7"`
+- `python -m pip install --upgrade build "twine==7.0.0"`
 - `python -m pytest -q`
 - `python scripts/check_proof_surface_conformance.py`
 - `python scripts/export_proof_surface_contract.py --out .release-check/proof-surface-contract-v0.1`
