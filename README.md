@@ -41,7 +41,7 @@ It produces review indexes and summaries, not compliance findings.
 
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
-![version](https://img.shields.io/badge/version-0.1.1-informational.svg)
+![version](https://img.shields.io/badge/version-0.2.0-informational.svg)
 [![CI](https://github.com/HarperZ9/repo-proof-index/actions/workflows/ci.yml/badge.svg)](https://github.com/HarperZ9/repo-proof-index/actions/workflows/ci.yml)
 [![part of: AI-accountability toolkit](https://img.shields.io/badge/part_of-AI--accountability_toolkit-7a5cff.svg)](https://harperz9.github.io)
 
