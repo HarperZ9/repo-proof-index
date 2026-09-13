@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -11,6 +10,7 @@ from .organ_rows import (
     summarize_orca_organ_exchange,
     summarize_organ_receipt_bundle,
 )
+from .strict_json import load_json_object
 
 
 @dataclass(frozen=True)
@@ -21,6 +21,12 @@ class ProofRow:
     status: str
     evidence: str
     path: str
+    producer_status: str = ""
+    verification_state: str = "not_assessed"
+
+    def __post_init__(self) -> None:
+        if not self.producer_status:
+            object.__setattr__(self, "producer_status", self.status)
 
 
 @dataclass(frozen=True)
@@ -28,6 +34,7 @@ class ProofSummary:
     total: int
     kinds: dict[str, int]
     statuses: dict[str, int]
+    verification_states: dict[str, int]
     evidence_gaps: int
     action_items: list[str]
 
@@ -88,13 +95,58 @@ def _backend_evidence(data: dict[str, Any]) -> str:
 
 
 def _proof_surface_evidence(data: dict[str, Any]) -> str:
+    declared = _as_text(data.get("status"))
     checks = data.get("checks")
     actions = data.get("action_items")
     claims = data.get("claims")
     check_count = len(checks) if isinstance(checks, list) else 0
     action_count = len(actions) if isinstance(actions, list) else 0
     claim_count = len(claims) if isinstance(claims, list) else 0
-    return f"claims={claim_count}, checks={check_count}, actions={action_count}"
+    return (
+        f"declared={declared}, verification=not_verified, "
+        f"claims={claim_count}, checks={check_count}, actions={action_count}"
+    )
+
+
+def _is_research_claim_packet(data: dict[str, Any]) -> bool:
+    return data.get("version") == "research-claim-proof-packet/v0" and isinstance(
+        data.get("packet_id"), str
+    )
+
+
+def _check_verdict_counts(data: dict[str, Any]) -> str:
+    verdicts = data.get("verdicts")
+    if not isinstance(verdicts, dict):
+        return "checks=0"
+    per_check = verdicts.get("per_check")
+    if not isinstance(per_check, list):
+        return "checks=0"
+    counts: dict[str, int] = {}
+    for row in per_check:
+        if not isinstance(row, dict):
+            continue
+        status = _as_text(row.get("status"), "")
+        if status:
+            counts[status] = counts.get(status, 0) + 1
+    if not counts:
+        return "checks=0"
+    return "checks: " + ", ".join(f"{status}={count}" for status, count in sorted(counts.items()))
+
+
+def _research_claim_status(data: dict[str, Any]) -> str:
+    verdicts = data.get("verdicts")
+    if isinstance(verdicts, dict):
+        return _as_text(verdicts.get("overall"))
+    return "unknown"
+
+
+def _research_claim_evidence(data: dict[str, Any]) -> str:
+    status = _research_claim_status(data)
+    promotion = _as_text(data.get("promotion"))
+    return (
+        f"reported={status}, verification=not_verified, "
+        f"promotion={promotion}, {_check_verdict_counts(data)}"
+    )
 
 
 def _relative(path: Path, base: Path) -> str:
@@ -106,9 +158,7 @@ def _relative(path: Path, base: Path) -> str:
 
 def summarize_contract(path: Path, base: Path | None = None) -> ProofRow:
     base = base or path.parent
-    data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict):
-        raise ValueError(f"{path} did not contain a JSON object")
+    data = load_json_object(path)
 
     rel_path = _relative(path, base)
 
@@ -147,13 +197,29 @@ def summarize_contract(path: Path, base: Path | None = None) -> ProofRow:
         )
 
     if "proof_surface_version" in data and "packet_id" in data:
+        status = _as_text(data.get("status"))
         return ProofRow(
             contract=_as_text(data.get("packet_id")),
             kind="proof-surface-packet",
             surface=_as_text(data.get("surface")),
-            status=_as_text(data.get("status")),
+            status=status,
             evidence=_proof_surface_evidence(data),
             path=rel_path,
+            producer_status=status,
+            verification_state="not_verified",
+        )
+
+    if _is_research_claim_packet(data):
+        status = _research_claim_status(data)
+        return ProofRow(
+            contract=_as_text(data.get("packet_id")),
+            kind="research-claim-packet",
+            surface=_as_text(data.get("scope") or data.get("claim"), "research-claim"),
+            status=status,
+            evidence=_research_claim_evidence(data),
+            path=rel_path,
+            producer_status=status,
+            verification_state="not_verified",
         )
 
     if is_orca_organ_exchange(data):
@@ -257,7 +323,28 @@ def _needs_action(row: ProofRow) -> bool:
         "unverifiable",
         "unverified",
     }
-    return status in statuses or _has_evidence_gap(row)
+    if status in statuses or _has_evidence_gap(row):
+        return True
+    return row.verification_state == "not_verified" and status in {
+        "match",
+        "pass",
+        "ready",
+        "verified",
+    }
+
+
+def _action_reason(row: ProofRow) -> str:
+    status = row.status.strip().lower()
+    if _has_evidence_gap(row):
+        return "add evidence"
+    if row.verification_state == "not_verified" and status in {
+        "match",
+        "pass",
+        "ready",
+        "verified",
+    }:
+        return f"verify producer-declared {row.status}"
+    return f"resolve {row.status}"
 
 
 def summarize_rows(rows: list[ProofRow], action_limit: int = 8) -> ProofSummary:
@@ -265,14 +352,14 @@ def summarize_rows(rows: list[ProofRow], action_limit: int = 8) -> ProofSummary:
     for row in rows:
         if not _needs_action(row):
             continue
-        reason = "add evidence" if _has_evidence_gap(row) else f"resolve {row.status}"
-        action_items.append(f"{row.contract}: {reason} ({row.path})")
+        action_items.append(f"{row.contract}: {_action_reason(row)} ({row.path})")
         if len(action_items) >= action_limit:
             break
     return ProofSummary(
         total=len(rows),
         kinds=_counts(row.kind for row in rows),
         statuses=_counts(row.status for row in rows),
+        verification_states=_counts(row.verification_state for row in rows),
         evidence_gaps=sum(1 for row in rows if _has_evidence_gap(row)),
         action_items=action_items,
     )
@@ -283,6 +370,7 @@ def format_summary(summary: ProofSummary) -> str:
         f"total: {summary.total}",
         "kinds: " + _format_counts(summary.kinds),
         "statuses: " + _format_counts(summary.statuses),
+        "verification_states: " + _format_counts(summary.verification_states),
         f"evidence_gaps: {summary.evidence_gaps}",
         "action_items:",
     ]
