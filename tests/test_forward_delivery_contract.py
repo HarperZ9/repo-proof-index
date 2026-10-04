@@ -46,7 +46,7 @@ def test_public_and_developer_delivery_files_exist() -> None:
         "AGENTS.md",
         ".github/FUNDING.yml",
         ".github/workflows/ci.yml",
-        "docs/brand/repo-proof-index-hero.png",
+        "docs/art/social.png",
         "project-docs/specs/SPEC-repo-proof-index-forward-delivery.md",
     ]
 
@@ -59,7 +59,7 @@ def test_readme_and_usage_describe_public_and_developer_paths() -> None:
 
     for heading in ["## Why it matters", "## Try it", "## For developers"]:
         assert heading in readme
-    assert "docs/brand/repo-proof-index-hero.png" in readme
+    assert "docs/art/hero-light.svg" in readme
     assert "reviewer-ready index" in readme.lower()
     assert "python -m pytest" in readme
     assert "Usage" in usage
