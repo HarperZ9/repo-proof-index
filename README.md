@@ -1,10 +1,20 @@
-<p align="center"><img src="docs/art/repo-proof-index-header.svg" alt="Repo Proof Index" width="100%"></p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/HarperZ9/repo-proof-index/main/docs/art/hero-dark.svg">
+  <img src="https://raw.githubusercontent.com/HarperZ9/repo-proof-index/main/docs/art/hero-light.svg" alt="repo-proof-index: Index proof packets, receipts, and contracts into reviewer summaries. A chain of small linked squares, each holding a few ruled lines, winds inward to a bright core." width="100%">
+</picture>
 
-# Repo Proof Index
+# repo-proof-index
 
-![Repo Proof Index hero](docs/brand/repo-proof-index-hero.png)
+Index proof packets, receipts, and contracts into reviewer summaries.
 
-> Build a reviewer-ready index over proof packets, receipts, and contracts.
+```
+python -m pip install -e ".[test]"
+```
+
+[![version: 0.2.0](https://img.shields.io/badge/version-0.2.0-e6e1d6?style=flat-square&labelColor=1a1712)](https://pypi.org/project/repo-proof-index/)
+[![CI](https://github.com/HarperZ9/repo-proof-index/actions/workflows/ci.yml/badge.svg)](https://github.com/HarperZ9/repo-proof-index/actions/workflows/ci.yml)
+[![license](https://img.shields.io/badge/license-MIT-e6e1d6?style=flat-square&labelColor=1a1712)](https://github.com/HarperZ9/repo-proof-index/blob/main/LICENSE)
+![python 3.11+](https://img.shields.io/badge/python-3.11%2B-e6e1d6?style=flat-square&labelColor=1a1712)
 
 Repo Proof Index scans proof artifacts and returns the compact view a maintainer
 needs before release review: kind, surface, status, evidence summary, and source
