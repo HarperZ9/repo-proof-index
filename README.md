@@ -20,6 +20,12 @@ Repo Proof Index scans proof artifacts and returns the compact view a maintainer
 needs before release review: kind, surface, status, evidence summary, and source
 path. It indexes evidence; it does not decide whether the evidence is enough.
 
+## See it work, step by step
+
+The [animated explainer](https://harperz9.github.io/repo-explainers/repo-proof-index.html)
+walks through the four bundled proof artifacts indexed into one table, the difference between a declared and a verified status, the summary's action items, packet validation, and the strict JSON reader's rejections. Every value on it is output from this repository. Its
+source is [docs/explainer/index.html](docs/explainer/index.html).
+
 ## Why it matters
 
 As a repo gains receipts and proof packets, reviewers need a fast way to find
