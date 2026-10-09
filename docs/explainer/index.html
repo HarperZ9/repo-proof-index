@@ -121,6 +121,14 @@ footer.foot p{max-width:70ch;margin:0 0 .6rem}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition-duration:0s!important;animation-duration:0s!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
 }
+.film{margin:1rem 0 0;max-width:56rem}
+.film video{width:100%;height:auto;display:block;background:#000;border:1px solid var(--line)}
+.film figcaption{font-size:.9rem;color:var(--ink-soft);margin-top:.55rem;max-width:44rem;line-height:1.5}
+.soon{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);margin-top:.8rem}
+ol.walkthrough{padding-left:1.4rem;max-width:56rem;margin:1rem 0 0}
+ol.walkthrough li{margin:0 0 1.4rem}
+ol.walkthrough h3{margin:0 0 .3rem;font-size:1.05rem}
+ol.walkthrough p{margin:0 0 .3rem;max-width:44rem}
 
 /* generic scene kit: a pipeline strip, an input/output panel, a case picker, a table */
 .kscene{display:flex;flex-direction:column;gap:.8rem}
@@ -174,6 +182,12 @@ footer.foot p{max-width:70ch;margin:0 0 .6rem}
   <p class="src">Source: <a href="https://github.com/HarperZ9/repo-proof-index/blob/11a31215924a1a07329745001a7ad3b9b658e5dc/README.md">README.md</a> at 11a3121 (version 0.2.0)</p>
 </section>
 
+<section class="block wrap" aria-labelledby="watch">
+  <h2 id="watch">Watch</h2>
+  <p class="measure">No concept film fits this tool closely yet. The walkthrough below covers it in text, with real commands and output.</p>
+  <p class="soon">Video walkthrough: coming with the next release.</p>
+</section>
+
 <section class="block wrap" aria-labelledby="how">
   <h2 id="how">How it works, one step at a time</h2>
   <p class="measure">Scroll, or use the step buttons. The panel indexes the four artifacts in <code>examples/contracts/</code>. Every line is output from repo-proof-index at commit 11a3121.</p>
@@ -223,14 +237,32 @@ footer.foot p{max-width:70ch;margin:0 0 .6rem}
   </div>
 </section>
 
-<section class="block wrap" aria-labelledby="try">
-  <h2 id="try">Try it</h2>
-  <div class="measure"><p>Install from PyPI (Python 3.10 or newer).</p></div>
+<section class="block wrap" aria-labelledby="walkthrough">
+  <h2 id="walkthrough">Walkthrough</h2>
+  <p class="measure">Install it, run it once, then use the main feature. Each command below is real, and so is its output.</p>
+  <ol class="walkthrough">
+    <li><h3>Install</h3><p>Install from PyPI and clone for the examples. Python 3.10 or newer.</p>
 <pre class="cmd"><code>$ python -m pip install repo-proof-index
-$ git clone https://github.com/HarperZ9/repo-proof-index && cd repo-proof-index
-$ repo-proof-index examples/contracts/*.json --summary
+$ git clone https://github.com/HarperZ9/repo-proof-index && cd repo-proof-index</code></pre></li>
+    <li><h3>First run: index one record</h3><p>Read one proof record and report its kind and verification state.</p>
+<pre class="cmd"><code>$ repo-proof-index examples/contracts/sample-witness-receipt.json --json
+<span class="out">&quot;kind&quot;: &quot;witness-receipt&quot;
+&quot;status&quot;: &quot;MATCH&quot;
+&quot;producer_status&quot;: &quot;MATCH&quot;
+&quot;verification_state&quot;: &quot;not_assessed&quot;</span></code></pre></li>
+    <li><h3>Summarize a folder</h3><p>Count records by verification state.</p>
+<pre class="cmd"><code>$ repo-proof-index examples/contracts/*.json --summary
 <span class="out">total: 4
-verification_states: not_assessed=3, not_verified=1</span></code></pre>
+kinds: backend-capability=1, product-use-case=1, proof-surface-packet=1, witness-receipt=1
+statuses: MATCH=1, backend-matrix=1, needs-polish=1, release-candidate=1
+verification_states: not_assessed=3, not_verified=1
+evidence_gaps: 0
+action_items:
+- proof-surface-public-release-demo: resolve needs-polish</span></code></pre></li>
+    <li><h3>A malformed record is rejected</h3><p>A file with a duplicate key is refused.</p>
+<pre class="cmd"><code>$ repo-proof-index dup.json
+<span class="out">error: duplicate JSON key: status</span></code></pre></li>
+  </ol>
   <p class="src">Output from repo-proof-index at 11a3121 run from source with proof-surface on the path.</p>
 </section>
 
