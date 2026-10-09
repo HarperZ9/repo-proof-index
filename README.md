@@ -26,6 +26,53 @@ The [animated explainer](https://harperz9.github.io/repo-explainers/repo-proof-i
 walks through the four bundled proof artifacts indexed into one table, the difference between a declared and a verified status, the summary's action items, packet validation, and the strict JSON reader's rejections. Every value on it is output from this repository. Its
 source is [docs/explainer/index.html](docs/explainer/index.html).
 
+## Watch
+
+No concept film fits this tool closely yet. The walkthrough below covers it in text, with real commands and output.
+
+Video walkthrough: coming with the next release.
+
+## Walkthrough
+
+Install it, run it once, then use the main feature. Each command below is real, and so is its output.
+
+1. **Install.** Install from PyPI and clone for the examples. Python 3.10 or newer.
+
+   ```text
+   $ python -m pip install repo-proof-index
+   $ git clone https://github.com/HarperZ9/repo-proof-index && cd repo-proof-index
+   ```
+
+2. **First run: index one record.** Read one proof record and report its kind and verification state.
+
+   ```text
+   $ repo-proof-index examples/contracts/sample-witness-receipt.json --json
+   "kind": "witness-receipt"
+   "status": "MATCH"
+   "producer_status": "MATCH"
+   "verification_state": "not_assessed"
+   ```
+
+3. **Summarize a folder.** Count records by verification state.
+
+   ```text
+   $ repo-proof-index examples/contracts/*.json --summary
+   total: 4
+   kinds: backend-capability=1, product-use-case=1, proof-surface-packet=1, witness-receipt=1
+   statuses: MATCH=1, backend-matrix=1, needs-polish=1, release-candidate=1
+   verification_states: not_assessed=3, not_verified=1
+   evidence_gaps: 0
+   action_items:
+   - proof-surface-public-release-demo: resolve needs-polish
+   ```
+
+4. **A malformed record is rejected.** A file with a duplicate key is refused.
+
+   ```text
+   $ repo-proof-index dup.json
+   error: duplicate JSON key: status
+   ```
+
 ## Why it matters
 
 As a repo gains receipts and proof packets, reviewers need a fast way to find
