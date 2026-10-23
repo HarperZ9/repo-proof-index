@@ -171,11 +171,11 @@ ol.walkthrough p{margin:0 0 .3rem;max-width:44rem}
 <section class="block wrap" aria-labelledby="for-you">
   <h2 id="for-you">What it does for you</h2>
   <div class="measure">
-    <p>As a repository collects receipts and proof packets, a reviewer needs to find what each one claims and where its evidence lives. Repo Proof Index reads them all, whatever their shape, and gives one row per artifact: its kind, the surface it describes, the status it reports, a short evidence line and its path. It says plainly which statuses it checked and which it only read.</p>
+    <p>As a repository collects receipts and proof packets, a reviewer needs to find what each one claims and where its evidence lives. Repo Proof Index reads them all, whatever their shape, and gives one row per artifact: its kind, the surface it describes, the status it reports, a short evidence line and its path. Each row says whether the index checked the status or read it as given.</p>
   </div>
   <ul class="uses">
     <li><b>One table for many shapes</b>Proof contracts, proof-surface packets, witness receipts and backend descriptors all become rows.</li>
-    <li><b>Declared is not verified</b>Each row records the producer's status and a separate verification state.</li>
+    <li><b>Declared and verified, kept apart</b>Each row records the producer's status and a separate verification state.</li>
     <li><b>Action items</b><code>--summary</code> counts kinds and statuses and lists what needs work.</li>
     <li><b>A strict reader first</b>Duplicate keys, NaN and Infinity, oversized files and deep nesting are rejected before indexing.</li>
   </ul>
@@ -209,7 +209,7 @@ ol.walkthrough p{margin:0 0 .3rem;max-width:44rem}
       </div></li>
       <li class="step" tabindex="-1" data-scene="k1" data-state="s"><div class="card">
         <span class="num">02</span><h3>A status read is not a status checked</h3>
-        <p>The witness receipt says MATCH. The index records that as the producer's status and sets its own verification state to <code>not_assessed</code>, because it did not re-run the witness. It indexes the evidence; it does not decide whether the evidence is enough.</p>
+        <p>The witness receipt says MATCH. The index records that as the producer's status and sets its own verification state to <code>not_assessed</code>, because reading a receipt is a different act from re-running its witness. The index points to the evidence, and the reviewer judges whether it is enough.</p>
         <p class="src">Source: <a href="https://github.com/HarperZ9/repo-proof-index/blob/11a31215924a1a07329745001a7ad3b9b658e5dc/src/repo_proof_index/indexer.py">src/repo_proof_index/indexer.py</a>; README.md, opening paragraph</p>
       </div></li>
       <li class="step" tabindex="-1" data-scene="k2" data-state="s"><div class="card">
@@ -224,7 +224,7 @@ ol.walkthrough p{margin:0 0 .3rem;max-width:44rem}
       </div></li>
       <li class="step" tabindex="-1" data-scene="k4" data-state="s"><div class="card">
         <span class="num">05</span><h3>A strict reader before a tolerant one</h3>
-        <p>The parser tolerates unknown shapes, but only after a strict JSON read. A key written twice, such as a status of MATCH and then DRIFT, is rejected; so is a NaN value, and so is a file that holds no JSON object. Pick each file in the panel.</p>
+        <p>The parser accepts any artifact shape once the file passes a strict JSON read. That read rejects a key written twice, such as a status of MATCH and then DRIFT, a NaN value, and a file whose top level is something other than a JSON object. Pick each file in the panel.</p>
         <p class="src">Source: <a href="https://github.com/HarperZ9/repo-proof-index/blob/11a31215924a1a07329745001a7ad3b9b658e5dc/src/repo_proof_index/strict_json.py">src/repo_proof_index/strict_json.py</a></p>
       </div></li>
     </ol>
@@ -261,10 +261,10 @@ action_items:
 </section>
 
 <section class="block wrap" aria-labelledby="limits">
-  <h2 id="limits">What it does not do</h2>
+  <h2 id="limits">Limits</h2>
   <ul class="limits">
-    <li>It indexes evidence. It does not decide whether the evidence is enough, and it produces no compliance finding.</li>
-    <li>A status in the table is the producer's word unless the verification state says otherwise.</li>
+    <li>It indexes evidence. Whether the evidence is enough, and any compliance finding, is the reviewer's call.</li>
+    <li>A status in the table is the producer's word until the verification state says it was checked.</li>
     <li>Shape-tolerant parsing gives unknown artifacts best-effort fields, which a reviewer should read as guesses.</li>
   </ul>
   <p class="src">Source: README.md at 11a3121, opening paragraph, "Current status" and "Existing technical notes"</p>
@@ -273,7 +273,7 @@ action_items:
 <section class="block wrap recall" aria-labelledby="recall">
   <h2 id="recall">Check what stuck</h2>
   <p class="measure">Answer each one in your head before you open it.</p>
-  <details><summary>The witness receipt says MATCH. What is its verification state, and why?</summary><p>not_assessed: the index read the status and did not re-run the witness.</p></details>
+  <details><summary>The witness receipt says MATCH. What is its verification state, and why?</summary><p>not_assessed: the index read the status, and re-running the witness is a separate step.</p></details>
   <details><summary>A file writes the key status twice. What happens?</summary><p>The strict reader rejects it before indexing: duplicate JSON key.</p></details>
   <details><summary>What turns a row into an action item?</summary><p>A status that needs work, such as the packet's needs-polish.</p></details>
 </section>
